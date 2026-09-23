@@ -100,6 +100,36 @@ def test_cookie_export_is_forwarded_to_ytdlp(dub_pipeline, tmp_path, monkeypatch
     assert captured["cookiefile"] == cookie_path
 
 
+def test_ytdlp_gets_ejs_challenge_solver(dub_pipeline, tmp_path, monkeypatch):
+    """YouTube `n`-challenge solving needs the EJS solver: without it even a
+    signed-in cookie session yields no playable formats."""
+    import yt_dlp
+
+    captured = {}
+
+    class FakeYDL:
+        def __init__(self, opts):
+            captured.update(opts)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def extract_info(self, _url, download=True):
+            raise RuntimeError("stop after capturing options")
+
+    monkeypatch.setattr(yt_dlp, "YoutubeDL", FakeYDL)
+    with pytest.raises(RuntimeError):
+        dub_pipeline.yt_download_sync(
+            "https://youtube.com/watch?v=abc",
+            str(tmp_path),
+        )
+
+    assert "ejs:github" in captured["remote_components"]
+
+
 def test_pipeline_deletes_cookie_export_after_download_failure(
     dub_pipeline, tmp_path, monkeypatch
 ):

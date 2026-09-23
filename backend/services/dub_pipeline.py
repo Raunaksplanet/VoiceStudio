@@ -1011,6 +1011,12 @@ def yt_download_sync(
         # it entirely (equivalent to yt-dlp's --no-mtime).
         "updatetime": False,
         "socket_timeout": 30,
+        # YouTube's `n`-challenge must be solved to get playable formats —
+        # without the EJS solver even a signed-in cookie session yields no
+        # URLs ("The page needs to be reloaded"). The solver ships as cached
+        # remote components (GitHub, fetched once) and only runs for
+        # challenge-gated YouTube extractions.
+        "remote_components": {"ejs:github"},
         # Resilience against YouTube CDN flakes: a single empty fragment
         # (commonly the very last one — "Did not get any data blocks")
         # used to fail the whole ingest at 99% complete. Retry each
