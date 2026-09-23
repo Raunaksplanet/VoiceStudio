@@ -348,6 +348,10 @@ export const setDubMultiTargets = (multiTargets: Array<{ lang: string; code: str
   });
 };
 export const useDubSession = () => useStore(dubSession);
+/** Reactive mirror of the module-level cancel-in-flight flag. Ephemeral by
+ * design: never persisted, so a reload can never wedge the UI disabled. */
+export const dubCancelling = new Store(false);
+export const useDubCancelling = () => useStore(dubCancelling);
 const editHistory = new Store({ undoDepth: 0, redoDepth: 0 });
 const undoStack: DubSegment[][] = [];
 const redoStack: DubSegment[][] = [];
@@ -1733,6 +1737,7 @@ export async function cancelDub() {
   batchRunId += 1;
   patch({ batchProgress: undefined });
   cancelling = true;
+  dubCancelling.setState(() => true);
   controller?.abort();
   try {
     const results = await Promise.allSettled([
@@ -1762,6 +1767,7 @@ export async function cancelDub() {
     else patch({ recovery, error: DUB_STOP_FAILED });
   } finally {
     cancelling = false;
+    dubCancelling.setState(() => false);
   }
 }
 

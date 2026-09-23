@@ -19,6 +19,8 @@ import {
   insertDubSegment,
   mergeDubSegment,
   moveResizeDubSegment,
+  cancelDub,
+  dubCancelling,
   redoDubEdit,
   resetDubSession,
   translateDub,
@@ -721,4 +723,30 @@ it('resetDubSession drops the loaded source but keeps production preferences', (
   expect(dubSession.state.error).toBeNull();
   expect(dubSession.state.target).toBe('French');
   expect(dubSession.state.quality).toBe('cinematic');
+});
+
+it('cancelDub exposes cancel-in-flight state so removal stays disabled', async () => {
+  dubSession.setState((current) => ({
+    ...current,
+    jobId: 'cancel-job',
+    taskId: null,
+    recovery: 'transcribing',
+    phase: 'transcribing',
+  }));
+  let resolveAbort!: (value: unknown) => void;
+  vi.mocked(apiJson).mockReset();
+  vi.mocked(apiJson).mockImplementationOnce(
+    () => new Promise((resolve) => { resolveAbort = resolve; }),
+  );
+  const pending = cancelDub();
+  expect(dubCancelling.state).toBe(true);
+  resolveAbort({});
+  await pending;
+  expect(dubCancelling.state).toBe(false);
+  dubSession.setState((current) => ({
+    ...current,
+    jobId: null,
+    recovery: null,
+    phase: 'idle',
+  }));
 });

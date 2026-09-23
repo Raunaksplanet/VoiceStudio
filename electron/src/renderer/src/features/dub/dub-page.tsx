@@ -96,6 +96,7 @@ import { LANG_CODES } from '../../../../../../frontend/src/utils/languages';
 import { cn } from '@/lib/utils';
 import {
   useDubSession,
+  useDubCancelling,
   uploadDub,
   translateDub,
   translateDubBatch,
@@ -209,6 +210,7 @@ export function DubPage() {
   const { t, i18n } = useTranslation();
   const reviewMode = useReviewMode();
   const session = useDubSession();
+  const cancelling = useDubCancelling();
   const editHistory = useDubEditHistory();
   const input = useRef<HTMLInputElement>(null);
   const subtitles = useRef<HTMLInputElement>(null);
@@ -1002,9 +1004,12 @@ export function DubPage() {
                   size="xs"
                   variant="ghost"
                   aria-label={t('dub.remove_video')}
-                  disabled={busy || Boolean(session.recovery)}
+                  disabled={busy || cancelling || Boolean(session.recovery)}
                   onClick={() => {
                     resetDubSession();
+                    segmentPreviewAbort.current?.abort();
+                    setSegmentPreview(null);
+                    setPreviewingSegmentId(null);
                     setPreview('original');
                     setUrl('');
                     setCookieFile(undefined);
