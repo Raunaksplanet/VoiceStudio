@@ -463,6 +463,7 @@
     "youtube_auth": "Login no YouTube (opcional)",
     "youtube_cookie_file": "Escolher uma exportação cookies.txt",
     "remove_cookie_file": "Remover arquivo de cookies",
+    "remove_video": "Remover vídeo",
     "cookie_transport_error": "A exportação de cookies requer HTTPS ou o aplicativo local.",
     "cookie_size_error": "A exportação de cookies deve ter no máximo 1 MB.",
     "save": "Salvar",

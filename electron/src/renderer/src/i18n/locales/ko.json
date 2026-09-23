@@ -459,6 +459,7 @@
     "youtube_auth": "YouTube 로그인(선택 사항)",
     "youtube_cookie_file": "cookies.txt 내보내기 선택",
     "remove_cookie_file": "쿠키 파일 제거",
+    "remove_video": "동영상 삭제",
     "cookie_transport_error": "쿠키 내보내기에는 HTTPS 또는 로컬 데스크톱 앱이 필요합니다.",
     "cookie_size_error": "쿠키 내보내기 파일은 1MB 이하여야 합니다.",
     "save": "저장",

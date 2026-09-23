@@ -1799,6 +1799,38 @@ export function discardDubRecovery(): void {
   persist();
 }
 
+/** Drop the current source so a new video or URL can be started. Production
+ * preferences (target, quality, voice, timing, …) are kept; everything
+ * source-specific (job, segments, transcript, errors) is cleared. */
+export function resetDubSession(): void {
+  if (controller || cancelling) return;
+  const current = dubSession.state;
+  clearDubEditHistory();
+  dubSession.setState(() => ({
+    ...initial,
+    target: current.target,
+    multiTargets: current.multiTargets,
+    quality: current.quality,
+    agentCli: current.agentCli,
+    autoGlossary: current.autoGlossary,
+    reflectPass: current.reflectPass,
+    condenseSuggest: current.condenseSuggest,
+    dialect: current.dialect,
+    translationInstructions: current.translationInstructions,
+    timingStrategy: current.timingStrategy,
+    voiceMatch: current.voiceMatch,
+    sourceLanguage: current.sourceLanguage,
+    numSpeakers: current.numSpeakers,
+    fitOptions: current.fitOptions,
+    steps: current.steps,
+    guidance: current.guidance,
+    speed: current.speed,
+    instruct: current.instruct,
+    exportOptions: current.exportOptions,
+  }));
+  persist();
+}
+
 export async function resumeDub() {
   const { recovery, taskId, jobId } = dubSession.state;
   if (!recovery || !jobId || (recovery !== 'transcribing' && !taskId)) return;

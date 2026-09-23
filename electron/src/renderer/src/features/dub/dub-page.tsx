@@ -114,6 +114,7 @@ import {
   redoDubEdit,
   resumeDub,
   discardDubRecovery,
+  resetDubSession,
   dismissDubError,
   applyDubQc,
   applyDubTranslationRows,
@@ -893,14 +894,34 @@ export function DubPage() {
                     }
                   }}
                 >
-                  <Input
-                    type="url"
-                    value={url}
-                    onChange={(event) => setUrl(event.target.value)}
-                    aria-label={t('dub.paste_url')}
-                    placeholder={t('dub.paste_url')}
-                    disabled={busy || Boolean(session.recovery)}
-                  />
+                  <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <Input
+                        type="url"
+                        value={url}
+                        onChange={(event) => setUrl(event.target.value)}
+                        aria-label={t('dub.paste_url')}
+                        placeholder={t('dub.paste_url')}
+                        disabled={busy || Boolean(session.recovery)}
+                      />
+                    </div>
+                    {url && (
+                      <Button
+                        type="button"
+                        size="xs"
+                        variant="ghost"
+                        aria-label={t('common.clear')}
+                        disabled={busy || Boolean(session.recovery)}
+                        onClick={() => {
+                          setUrl('');
+                          setCookieFile(undefined);
+                          setCookieError(false);
+                        }}
+                      >
+                        {t('common.clear')}
+                      </Button>
+                    )}
+                  </div>
                   {url && (
                     <details className="space-y-2">
                       <summary className="cursor-pointer text-xs text-muted-foreground">
@@ -976,6 +997,21 @@ export function DubPage() {
                   onClick={() => input.current?.click()}
                 >
                   {t('dub.change_file')}
+                </Button>
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  aria-label={t('dub.remove_video')}
+                  disabled={busy || Boolean(session.recovery)}
+                  onClick={() => {
+                    resetDubSession();
+                    setPreview('original');
+                    setUrl('');
+                    setCookieFile(undefined);
+                    setCookieError(false);
+                  }}
+                >
+                  {t('dub.remove_video')}
                 </Button>
               </div>
             )}
