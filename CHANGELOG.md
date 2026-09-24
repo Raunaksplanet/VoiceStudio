@@ -43,10 +43,7 @@ metadata and the backend fallback mirror it. Archived Tauri manifests stay froze
 ### Fixed
 
 - A video with no audio track now says so in Dub, Batch, transcription, cloning and imports instead of showing ffmpeg's exit-234 dump (#2308)
-
-### Fixed
-
-- Dub import card gains Clear (URL) and Remove video controls (#2314)
+- Dub import card gains Clear (URL) and Remove video controls with confirmation before discarding a transcript (#2314) — thanks @Raunaksplanet!
 
 ## [0.5.6] — 2026-09-23
 

@@ -1808,8 +1808,8 @@ export function discardDubRecovery(): void {
 /** Drop the current source so a new video or URL can be started. Production
  * preferences (target, quality, voice, timing, …) are kept; everything
  * source-specific (job, segments, transcript, errors) is cleared. */
-export function resetDubSession(): void {
-  if (controller || cancelling) return;
+export function resetDubSession(): boolean {
+  if (controller || cancelling) return false;
   const current = dubSession.state;
   clearDubEditHistory();
   dubSession.setState(() => ({
@@ -1835,6 +1835,7 @@ export function resetDubSession(): void {
     exportOptions: current.exportOptions,
   }));
   persist();
+  return true;
 }
 
 export async function resumeDub() {
