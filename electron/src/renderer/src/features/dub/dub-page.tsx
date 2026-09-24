@@ -628,6 +628,7 @@ export function DubPage() {
 
   const removeVideo = () => {
     if (busy || cancelling || session.recovery || !resetDubSession()) return;
+    livePreview.stop();
     segmentPreviewAbort.current?.abort();
     segmentPreviewAbort.current = null;
     setSegmentPreview(null);
